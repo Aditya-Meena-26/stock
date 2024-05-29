@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Prediction</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Stock Prediction</h1>
+    
+    {% for prediction in predictions %}
+        <h3>{{ prediction.symbol }}</h3>
+        <canvas id="stockChart{{ forloop.counter }}"></canvas>
+        <script>
+            const ctx{{ forloop.counter }} = document.getElementById('stockChart{{ forloop.counter }}').getContext('2d');
+            const historicalPrices{{ forloop.counter }} = {{ prediction.historical_prices|safe }};
+            const predictedPrices{{ forloop.counter }} = {{ prediction.predicted_prices|safe }};
+
+            const data{{ forloop.counter }} = {
+                labels: ['Last Historical Data', 'Predicted Price'],
+                datasets: [{
+                    label: 'Price',
+                    data: [historicalPrices{{ forloop.counter }}[historicalPrices{{ forloop.counter }}.length - 1], predictedPrices{{ forloop.counter }}],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(255, 99, 132, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 99, 132, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            };
+
+            const config{{ forloop.counter }} = {
+                type: 'bar',
+                data: data{{ forloop.counter }},
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            };
+
+            const stockChart{{ forloop.counter }} = new Chart(ctx{{ forloop.counter }}, config{{ forloop.counter }});
+        </script>
+    {% endfor %}
+</body>
+</html>
